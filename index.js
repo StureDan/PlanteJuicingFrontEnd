@@ -9,8 +9,10 @@
 methods: {
     async getMoisture() {
         
-            const response = await axios.get(baseUrl);
-            this.moisture = response.data.moisture;
+            //const response = await axios.get(baseUrl);
+            const mockData = { moisture: 45 }; // Mock data for testing
+            this.moisture = mockData.moisture; // Use mock data instead of API response
+            //this.moisture = response.data.moisture;
             
         
     }
