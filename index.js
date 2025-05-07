@@ -4,7 +4,7 @@ Vue.createApp({
     data() {
         return {
             moisture: [],
-            moistureValue: 123,
+            soilMoistureValue: 123,
             moistureMessage: "",
             temperature: 22, // Mock temperature value
             waterLevel: 75 // Mock water level value
@@ -20,11 +20,11 @@ Vue.createApp({
                 const highestIdObject = this.moisture.reduce((max, item) =>
                     item.id > max.id ? item : max
                 );
-                this.moistureValue = highestIdObject.jordfugtighedValue; // Antag at jordfugtighedsværdien er i feltet 'moistureValue'
+                this.soilMoistureValue = highestIdObject.soilMoistureValue; // Antag at jordfugtighedsværdien er i feltet 'moistureValue'
             }
 
             // Set the moisture message based on the moisture value
-            if (this.moistureValue < 30) {
+            if (this.soilMoistureValue < 30) {
                 this.moistureMessage = "Du skal vande din plante! 🌱";
             } else {
                 this.moistureMessage = "Din plante har det fint! 😊";
