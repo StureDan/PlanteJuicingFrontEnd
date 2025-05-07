@@ -1,18 +1,17 @@
 const baseUrl = 'https://plantejuicingrest20250506131910.azurewebsites.net/api/Jordfugtighed'; // Replace with your actual base URL
 
-
- Vue.createApp({
+Vue.createApp({
     data() {
-        return{
+        return {
             moisture: [],
-            moistureValue: 123
-            
+            moistureValue: 123,
+            moistureMessage: "",
+            temperature: 22, // Mock temperature value
+            waterLevel: 75 // Mock water level value
         };
- },
-methods: {
-    async getMoisture() {
-        
-<<<<<<< HEAD
+    },
+    methods: {
+        async getMoisture() {
             const response = await axios.get(baseUrl);
             this.moisture = response.data;
             console.log(this.moisture);
@@ -22,19 +21,17 @@ methods: {
                     item.id > max.id ? item : max
                 );
                 this.moistureValue = highestIdObject.jordfugtighedValue; // Antag at jordfugtighedsværdien er i feltet 'moistureValue'
-              }
-           
-=======
-            //const response = await axios.get(baseUrl);
-            const mockData = { moisture: 45 }; // Mock data for testing
-            this.moisture = mockData.moisture; // Use mock data instead of API response
-            //this.moisture = response.data.moisture;
->>>>>>> 62fef5bef03a3692067ea86c9b912e4d3c5ef249
-            
-        
+            }
+
+            // Set the moisture message based on the moisture value
+            if (this.moistureValue < 30) {
+                this.moistureMessage = "Du skal vande din plante! 🌱";
+            } else {
+                this.moistureMessage = "Din plante har det fint! 😊";
+            }
+        }
+    },
+    mounted() {
+        this.getMoisture();
     }
-},
-mounted() {
-    this.getMoisture();
-}
 }).mount('#app');
