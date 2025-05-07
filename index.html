@@ -36,22 +36,22 @@
             <div class="col-md-4">
                 <div class="card p-4 text-center">
                     <h2 class="card-title">🌱 Jordfugtighed</h2>
-                    <p class="card-text">Værdi: {{ moistureValue }}%</p>
-                    <p class="card-text">{{ moistureMessage }}</p>
+                    <p id="moistureValue" class="card-text">Værdi: {{ moistureValue }}%</p>
+                    <p id="moistureMessage" class="card-text">{{ moistureMessage }}</p>
                 </div>
             </div>
             <!-- Card for Temperature -->
             <div class="col-md-4">
                 <div class="card p-4 text-center">
                     <h2 class="card-title">🌡️ Temperatur</h2>
-                    <p class="card-text">Værdi: {{ temperature }}°C</p>
+                    <p id="tempValue" class="card-text">Værdi: {{ temperature }}°C</p>
                 </div>
             </div>
             <!-- Card for Water Level -->
             <div class="col-md-4">
                 <div class="card p-4 text-center">
                     <h2 class="card-title">💧 Vandbeholder</h2>
-                    <p class="card-text">Vandstand: {{ waterLevel }}%</p>
+                    <p id="waterLevelValue"class="card-text">Vandstand: {{ waterLevel }}%</p>
                 </div>
             </div>
         </div>
