@@ -1,4 +1,4 @@
-const baseUrl = 'https://plantejuicingrest20250506131910.azurewebsites.net/api/Jordfugtighed'; // Replace with your actual base URL
+const baseUrl = 'https://plantejuicingrest20250506131910.azurewebsites.net/api/SoilMoisture'; // Replace with your actual base URL
 
 Vue.createApp({
     data() {
