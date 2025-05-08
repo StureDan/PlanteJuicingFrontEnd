@@ -9,7 +9,8 @@ Vue.createApp({
             temperature: [],
             temperatureValue: null,
             tempMessage: "", 
-            waterLevel: 75 // Mock water level value
+            waterLevelValue: "",
+            waterLevelMessage: "",
         };
     },
     methods: {
@@ -56,10 +57,38 @@ Vue.createApp({
             } catch (error) {
                 console.error("Fejl ved hentning af temperaturdata:", error);
             }
+
+        },
+        async getWaterLevel() {
+            try {
+                const response = await axios.get(baseUrl + "WaterLevel"); // Hent vandstand
+                console.log("Vandstand API-svar:", response.data); // Log API-svaret
+
+                if (response.data.length > 0) {
+                    const highestIdObject = response.data.reduce((max, item) =>
+                        item.id > max.id ? item : max
+                    );
+                    this.waterLevelValue = highestIdObject.waterLevelValue; // Brug det korrekte feltnavn
+                } else {
+                    console.warn("Ingen vandstanddata fundet.");
+                }
+
+                // Tilføj en besked baseret på vandstandsværdien
+                if (this.waterLevelValue < 20) {
+                    this.waterLevelMessage = "Vandstanden er for lav! 💧";
+                } else if (this.waterLevelValue > 100) {
+                    this.waterLevelMessage = "Vandstanden er for høj! 🌊";
+                } else {
+                    this.waterLevelMessage = "Vandstanden er passende. 😊";
+                }
+            } catch (error) {
+                console.error("Fejl ved hentning af vandstanddata:", error);
+            }
         }
     },
     mounted() {
         this.getMoisture();
-        this.getTemperature(); // Hent temperaturdata ved opstart
+        this.getTemperature();
+        this.getWaterLevel(); // Hent vandstand ved opstart
     }
 }).mount('#app');
