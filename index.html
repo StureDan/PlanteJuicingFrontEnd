@@ -34,7 +34,7 @@
         <div class="row g-4">
             <!-- Card for Moisture -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
+                <div class="card p-4 text-center" :class="{'bg-danger text-white': soilMoistureValue < 30}">
                     <h2 class="card-title">🌱 Jordfugtighed</h2>
                     <p id="moistureValue" class="card-text">Værdi: {{ soilMoistureValue }}%</p>
                     <p id="moistureMessage" class="card-text">{{ moistureMessage }}</p>
@@ -42,7 +42,7 @@
             </div>
             <!-- Card for Temperature -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
+                <div class="card p-4 text-center" :class="{'bg-danger text-white': temperatureValue < 5 || temperatureValue > 40}">
                     <h2 class="card-title">🌡️ Temperatur</h2>
                     <p id="temperatureValue" class="card-text">Værdi: {{ temperatureValue }}°C</p>
                     <p id="tempMessage" class="card-text">{{ temperatureMessage }}</p>
@@ -50,7 +50,7 @@
             </div>
             <!-- Card for Water Level -->
             <div class="col-md-4">
-                <div class="card p-4 text-center">
+                <div class="card p-4 text-center" :class="{'bg-danger text-white': waterLevelValue < 20}">
                     <h2 class="card-title">💧 Vandbeholder</h2>
                     <p id="waterLevelValue" class="card-text">Vandstand: {{ waterLevelValue }}%</p>
                     <p id="waterLevelMessage" class="card-text">{{ waterLevelMessage }}</p>
@@ -61,4 +61,3 @@
     <script src="index.js"></script>
 </body>
 </html>
-#YO
