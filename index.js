@@ -9,7 +9,7 @@ Vue.createApp({
             temperature: [],
             temperatureValue: null,
             tempMessage: "", 
-            waterLevelValue: "",
+            waterLevelValue: null,
             waterLevelMessage: "",
         };
     },
