@@ -31,6 +31,14 @@
 </head>
 <body>
     <div id="app" class="container py-5">
+        <!-- Navigation Button for Plant Guide -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <a id="PlanteGuide" href="AllPlants.html" class="btn btn-success btn-lg">
+                    <i class="bi bi-book"></i> 🌿 Planteguide
+                </a>
+            </div>
+        </div>
         <div class="row g-4">
             <!-- Card for Moisture -->
             <div class="col-md-4">
@@ -54,6 +62,37 @@
                     <h2 class="card-title">💧 Vandbeholder</h2>
                     <p id="waterLevelValue" class="card-text">Vandstand: {{ waterLevelValue }}%</p>
                     <p id="waterLevelMessage" class="card-text">{{ waterLevelMessage }}</p>
+                </div>
+            </div>
+        </div>        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">Mine Planter</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Billede</th>
+                                    <th>Plantenavn</th>
+                                    <th>Handling</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="plant in plants" :key="plant.id">
+                                    <td><img :src="plant.image" :alt="plant.name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
+                                    <td>{{ plant.name }}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" @click="deletePlant(plant.id)">Slet</button>
+                                    </td>
+                                </tr>
+                                <tr v-if="plants.length === 0">
+                                    <td colspan="3" class="text-center">Ingen planter tilføjet endnu. Besøg <a href="AllPlants.html">Planteguiden</a> for at tilføje planter.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

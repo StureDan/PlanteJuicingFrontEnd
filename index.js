@@ -11,6 +11,8 @@ Vue.createApp({
             tempMessage: "", 
             waterLevelValue: null,
             waterLevelMessage: "",
+            plants: [],
+            selectedPlant: null, // Gem detaljer om den valgte plante
         };
     },
     methods: {
@@ -58,8 +60,7 @@ Vue.createApp({
                 console.error("Fejl ved hentning af temperaturdata:", error);
             }
 
-        },
-        async getWaterLevel() {
+        },        async getWaterLevel() {
             try {
                 const response = await axios.get(baseUrl + "WaterLevel"); // Hent vandstand
                 console.log("Vandstand API-svar:", response.data); // Log API-svaret
@@ -83,6 +84,34 @@ Vue.createApp({
                 }
             } catch (error) {
                 console.error("Fejl ved hentning af vandstanddata:", error);
+            }        },        // Hent planter fra localStorage
+        getPlants() {
+            // Hent gemte planter fra localStorage
+            const savedPlants = localStorage.getItem('savedPlants');
+            
+            if (savedPlants) {
+                this.plants = JSON.parse(savedPlants);
+                console.log("Planter hentet fra localStorage:", this.plants);
+            } else {
+                this.plants = [];
+                console.log("Ingen gemte planter fundet i localStorage");
+            }
+        },
+        // Slet en plante fra localStorage
+        deletePlant(plantId) {
+            if (confirm("Er du sikker på, at du vil slette denne plante?")) {                // Hent gemte planter
+                let savedPlants = JSON.parse(localStorage.getItem('savedPlants') || '[]');
+                
+                // Filtrer planten med det angivne ID ud
+                savedPlants = savedPlants.filter(plant => plant.id !== plantId);
+                
+                // Gem den opdaterede liste tilbage i localStorage
+                localStorage.setItem('savedPlants', JSON.stringify(savedPlants));
+                
+                // Opdater plants array i Vue komponenten
+                this.plants = savedPlants;
+                
+                alert("Planten er blevet slettet.");
             }
         }
     },
@@ -90,5 +119,6 @@ Vue.createApp({
         this.getMoisture();
         this.getTemperature();
         this.getWaterLevel(); // Hent vandstand ved opstart
+        this.getPlants(); // Hent planter ved opstart
     }
 }).mount('#app');
