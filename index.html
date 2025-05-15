@@ -70,25 +70,29 @@
                     <div class="card-header bg-success text-white">
                         <h3 class="mb-0">Mine Planter</h3>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-hover">
+                    <div class="card-body">                        
+                        <table id ="AllPlants" class="table table-hover">
                             <thead class="table-light">
                                 <tr>
                                     <th>Billede</th>
                                     <th>Plantenavn</th>
+                                    <th>Vanding</th>
+                                    <th>Sollys</th>
                                     <th>Handling</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="plant in plants" :key="plant.id">
+                            <tbody>                                <tr v-for="plant in plants" :key="plant.id">
                                     <td><img :src="plant.image" :alt="plant.name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
                                     <td>{{ plant.name }}</td>
+                                    <td>{{ plant.watering }} 💧</td>
+                                    <td>{{ plant.sunlight }} ☀️</td>
                                     <td>
+                                        <button class="btn btn-info btn-sm me-2" @click="viewPlantDetails(plant.id)">Detaljer</button>
                                         <button class="btn btn-danger btn-sm" @click="deletePlant(plant.id)">Slet</button>
                                     </td>
                                 </tr>
                                 <tr v-if="plants.length === 0">
-                                    <td colspan="3" class="text-center">Ingen planter tilføjet endnu. Besøg <a href="AllPlants.html">Planteguiden</a> for at tilføje planter.</td>
+                                    <td colspan="5" class="text-center">Ingen planter tilføjet endnu. Besøg <a href="AllPlants.html">Planteguiden</a> for at tilføje planter.</td>
                                 </tr>
                             </tbody>
                         </table>

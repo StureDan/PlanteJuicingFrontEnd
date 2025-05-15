@@ -60,7 +60,8 @@ Vue.createApp({
                 console.error("Fejl ved hentning af temperaturdata:", error);
             }
 
-        },        async getWaterLevel() {
+        },        
+        async getWaterLevel() {
             try {
                 const response = await axios.get(baseUrl + "WaterLevel"); // Hent vandstand
                 console.log("Vandstand API-svar:", response.data); // Log API-svaret
@@ -112,6 +113,19 @@ Vue.createApp({
                 this.plants = savedPlants;
                 
                 alert("Planten er blevet slettet.");
+            }
+        },
+        
+        // Vis detaljer om en specifik plante
+        viewPlantDetails(plantId) {
+            // Find planten i det lokale array
+            const plant = this.plants.find(p => p.id === plantId);
+            
+            if (plant && plant.plantId) {
+                // Naviger til PlanteDetaljer.html med det korrekte API plante-ID
+                window.location.href = `PlanteDetaljer.html?id=${plant.plantId}`;
+            } else {
+                alert("Kan ikke finde detaljer for denne plante.");
             }
         }
     },

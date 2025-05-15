@@ -12,16 +12,54 @@
 </head>
 <body>
     <div id="app">
-        <div class="container mt-4">
-            <h1>Plante Liste</h1>
-             <div class="row mb-4">
-            <div class="col-12 text-center">
-                <a id ="Back"href="index.html" class="btn btn-success btn-lg">
-                    <i class="bi bi-book"></i> Tilbage til drivhus
-                </a>
+        <div class="container mt-4">            <h1>Plante Liste</h1>             
+            <div class="row mb-4">
+                <div class="col-12 text-center">
+                    <a id="Back" href="index.html" class="btn btn-primary btn-lg">
+                        <i class="bi bi-house"></i> Tilbage til drivhus
+                    </a>
+                </div>
             </div>
-        </div>
-            <ul class="list-group">                <li v-for="plant in results" :key="plant.id" class="list-group-item d-flex align-items-center justify-content-between">
+            
+            <!-- Søgefelt -->
+            <div class="row mb-4">
+                <div class="col-md-8 offset-md-2">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="Søg efter planter..." 
+                            v-model="searchQuery"
+                            @keyup.enter="searchPlants">
+                        <button 
+                            class="btn btn-success" 
+                            @click="searchPlants">
+                            Søg
+                        </button>
+                        <button 
+                            class="btn btn-outline-secondary" 
+                            @click="clearSearch" 
+                            v-if="isSearchActive">
+                            Ryd søgning
+                        </button>
+                    </div>
+                </div>            </div>
+            
+            <!-- Loading indikator -->
+            <div v-if="loading" class="text-center my-5">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Indlæser...</span>
+                </div>
+                <p class="mt-2">Søger efter planter...</p>
+            </div>
+            
+            <!-- Søgeresultat info -->
+            <div v-if="isSearchActive && !loading" class="alert alert-info mb-3">
+                <span v-if="results.length > 0">Fandt {{results.length}} resultater for "{{searchQuery}}"</span>
+                <span v-else>Ingen resultater fundet for "{{searchQuery}}"</span>
+            </div>
+            
+            <ul class="list-group" v-if="!loading">                <li v-for="plant in results" :key="plant.id" class="list-group-item d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <!-- Billede af planten -->
                         <img 

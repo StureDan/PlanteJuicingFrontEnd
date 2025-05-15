@@ -1,7 +1,8 @@
 // Konstanter for API URL'er
-const perenualBaseUrl = 'https://perenual.com/api/species-list?key=sk-WMlO681db3e3dcd7a10327';
+const perenualBaseUrl = 'https://perenual.com/api/species-list?key=sk-2UXs68247b7c5997c10327';
 const detailsUrl = 'https://perenual.com/api/species/details/';
-const careGuideUrl = 'https://perenual.com/api/species-care-guide-list?key=sk-WMlO681db3e3dcd7a10327';
+const apiKey = 'sk-2UXs68247b7c5997c10327';
+const careGuideUrl = 'https://perenual.com/api/species-care-guide-list?key=sk-2UXs68247b7c5997c10327';
 
 Vue.createApp({
     data() {
@@ -19,17 +20,22 @@ Vue.createApp({
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         },
-        
-        // Hent plantedetaljer fra API
+          // Hent plantedetaljer fra API
         async fetchPlantDetails() {
             this.loading = true;
             this.error = null;
             
-            try {
-                // Hent grundlæggende plantedetaljer
-                const response = await axios.get(`${detailsUrl}${this.plantId}?key=sk-WMlO681db3e3dcd7a10327`);
+            try {                
+                // Hent grundlæggende plantedetaljer med API nøgle som query parameter
+                const response = await axios.get(`${detailsUrl}${this.plantId}?key=${apiKey}`);
                 this.plant = response.data;
                 console.log('Plant details:', this.plant);
+                
+                // Log alle tilgængelige billedformater for at finde det bedste billede
+                if (this.plant.default_image) {
+                    console.log('Available image types:', Object.keys(this.plant.default_image));
+                    console.log('All image data:', this.plant.default_image);
+                }
                 
                 // Hent plejeanvisninger
                 try {
@@ -51,9 +57,7 @@ Vue.createApp({
                 this.error = 'Der opstod en fejl ved hentning af plantedetaljer. Prøv igen senere.';
             } finally {
                 this.loading = false;
-            }
-        },
-        
+            }        },
         // Tilføj plante til brugerens gemte planter
         addPlant(plant) {
             // Opret plante-objekt til at gemme lokalt
@@ -61,6 +65,8 @@ Vue.createApp({
                 id: Date.now(), // Unik ID baseret på tidsstempel
                 name: plant.common_name || 'Ukendt plante',
                 image: plant.default_image?.thumbnail || 'https://via.placeholder.com/50x50?text=Plante',
+                watering: plant.watering || 'Ukendt',
+                sunlight: Array.isArray(plant.sunlight) ? plant.sunlight.join(', ') : (plant.sunlight || 'Ukendt'),
                 description: `${plant.scientific_name || ''} - Cyklus: ${plant.cycle || 'Ukendt'}, Vandes: ${plant.watering || 'Ukendt'}`
             };
             

@@ -19,13 +19,15 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .header-image {
+        }        .header-image {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 300px; /* Større højde for bedre visning */
+            object-fit: cover; /* Bibeholder aspect ratio mens den fylder containeren */
+            object-position: center; /* Centrerer billedet */
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
+            margin-bottom: 0; /* Fjern margin mellem billede og indhold */
+            display: block; /* Fjern eventuelle inline gaps */
         }
         .plant-detail {
             margin-bottom: 10px;
@@ -42,10 +44,12 @@
     </style>
 </head>
 <body>
-    <div id="app" class="container py-5">
-        <!-- Tilbage-knap -->
+    <div id="app" class="container py-5">        <!-- Navigations-knapper -->
         <div class="row mb-4">
-            <div class="col-12">
+            <div class="col-12 d-flex gap-3">
+                <a href="index.html" class="btn btn-primary btn-lg back-button">
+                    <i class="bi bi-house"></i> Tilbage til drivhus
+                </a>
                 <a href="AllPlants.html" class="btn btn-success btn-lg back-button">
                     <i class="bi bi-arrow-left"></i> Tilbage til planteguide
                 </a>
@@ -63,70 +67,74 @@
         <!-- Fejl besked -->
         <div v-if="error" class="alert alert-danger">
             {{ error }}
-        </div>
-
-        <!-- Plantedetaljer -->
+        </div>        <!-- Plantedetaljer -->
         <div v-if="!loading && plant" class="card">
-            <!-- Plantebillede header -->
-            <img v-if="plant.default_image?.medium_url" :src="plant.default_image.medium_url" :alt="plant.common_name" class="header-image">
+            <!-- Plantebillede header - prøv forskellige billedtyper i prioriteret rækkefølge -->
+            <img v-if="plant.default_image?.regular_url" 
+                 :src="plant.default_image.regular_url" 
+                 :alt="plant.common_name" 
+                 class="header-image">
+            <img v-else-if="plant.default_image?.original_url" 
+                 :src="plant.default_image.original_url" 
+                 :alt="plant.common_name" 
+                 class="header-image">
+            <img v-else-if="plant.default_image?.large_url" 
+                 :src="plant.default_image.large_url" 
+                 :alt="plant.common_name" 
+                 class="header-image">
+            <img v-else-if="plant.default_image?.medium_url" 
+                 :src="plant.default_image.medium_url" 
+                 :alt="plant.common_name" 
+                 class="header-image">
 
             <div class="card-body">
                 <h1 class="card-title mb-4">{{ plant.common_name }}</h1>
                 <h3 class="text-muted mb-4">{{ plant.scientific_name }}</h3>
+                  <!-- Plejevejledning fra Care Guide -->
+                <h4 class="mt-4 mb-3">Plejevejledning</h4>
                 
-                <div class="row mt-4">
-                    <!-- Venstre kolonne med grundlæggende info -->
-                    <div class="col-md-6">
-                        <h4>Grundlæggende information</h4>
-                        
-                        <div class="plant-detail" v-if="plant.cycle">
-                            <i class="fas fa-sync-alt"></i>
-                            <strong>Cyklus:</strong> {{ plant.cycle }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="plant.watering">
-                            <i class="fas fa-tint"></i>
-                            <strong>Vanding:</strong> {{ plant.watering }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="plant.sunlight && plant.sunlight.length">
-                            <i class="fas fa-sun"></i>
-                            <strong>Sollys:</strong> {{ plant.sunlight.join(', ') }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="careDetails?.pruning">
-                            <i class="fas fa-cut"></i>
-                            <strong>Beskæring:</strong> {{ careDetails.pruning }}
+                <div class="row">
+                    <!-- Vanding -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-tint"></i> Vanding</h5>
+                            </div>
+                            <div class="card-body">
+                                <p v-if="careDetails?.watering" class="card-text">{{ careDetails.watering }}</p>
+                                <p v-else class="text-muted">Ingen vandingsanvisninger tilgængelige</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Højre kolonne med andre detaljer -->
-                    <div class="col-md-6">
-                        <h4>Yderligere detaljer</h4>
-                        
-                        <div class="plant-detail" v-if="plant.type">
-                            <strong>Type:</strong> {{ plant.type }}
+                    <!-- Sollys -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-sun"></i> Sollys</h5>
+                            </div>
+                            <div class="card-body">
+                                <p v-if="careDetails?.sunlight" class="card-text">{{ careDetails.sunlight }}</p>
+                                <p v-else class="text-muted">Ingen sollysanvisninger tilgængelige</p>
+                            </div>
                         </div>
-                        
-                        <div class="plant-detail" v-if="plant.dimensions">
-                            <strong>Dimensioner:</strong>
-                            Højde: {{ plant.dimensions?.height }} | 
-                            Bredde: {{ plant.dimensions?.width }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="careDetails?.soil">
-                            <strong>Jordtype:</strong> {{ careDetails.soil }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="careDetails?.fertilizer">
-                            <strong>Gødning:</strong> {{ careDetails.fertilizer }}
-                        </div>
-                        
-                        <div class="plant-detail" v-if="careDetails?.diseases">
-                            <strong>Almindelige sygdomme:</strong> {{ careDetails.diseases }}
+                    </div>
+                    
+                    <!-- Beskæring -->
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-cut"></i> Beskæring</h5>
+                            </div>
+                            <div class="card-body">
+                                <p v-if="careDetails?.pruning" class="card-text">{{ careDetails.pruning }}</p>
+                                <p v-else class="text-muted">Ingen beskæringsanvisninger tilgængelige</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                
                 
                 <!-- Tilføj plante knap -->
                 <div class="row mt-4">
