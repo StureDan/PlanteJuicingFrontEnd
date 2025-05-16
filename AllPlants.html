@@ -57,10 +57,10 @@
             <ul id="plant-list" class="list-group" v-if="!loading">
                 <li v-for="plant in results" :key="plant.id"
                     class="list-group-item d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <!-- Billede af planten -->
+                    <div class="d-flex align-items-center">                        <!-- Billede af planten -->
                         <img v-if="plant.default_image?.thumbnail" :src="plant.default_image.thumbnail"
                             :alt="plant.common_name || 'Ukendt navn'" class="me-3"
+                            @error="(e) => { e.target.src = 'https://via.placeholder.com/50x50?text=Plante'; }"
                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
 
                         <!-- Plantenavn -->

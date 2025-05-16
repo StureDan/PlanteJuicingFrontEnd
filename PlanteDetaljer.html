@@ -68,23 +68,30 @@
         <div v-if="error" class="alert alert-danger">
             {{ error }}
         </div>        <!-- Plantedetaljer -->
-        <div v-if="!loading && plant" class="card">
-            <!-- Plantebillede header - prøv forskellige billedtyper i prioriteret rækkefølge -->
-            <img v-if="plant.default_image?.regular_url" 
+        <div v-if="!loading && plant" class="card">            <!-- Plantebillede header - prøv forskellige billedtyper i prioriteret rækkefølge -->
+            <img v-if="plant.default_image?.regular_url && !imageError" 
                  :src="plant.default_image.regular_url" 
                  :alt="plant.common_name" 
+                 @error="handleImageError"
                  class="header-image">
-            <img v-else-if="plant.default_image?.original_url" 
+            <img v-else-if="plant.default_image?.original_url && !imageError" 
                  :src="plant.default_image.original_url" 
                  :alt="plant.common_name" 
+                 @error="handleImageError"
                  class="header-image">
-            <img v-else-if="plant.default_image?.large_url" 
+            <img v-else-if="plant.default_image?.large_url && !imageError" 
                  :src="plant.default_image.large_url" 
                  :alt="plant.common_name" 
+                 @error="handleImageError"
                  class="header-image">
-            <img v-else-if="plant.default_image?.medium_url" 
+            <img v-else-if="plant.default_image?.medium_url && !imageError" 
                  :src="plant.default_image.medium_url" 
                  :alt="plant.common_name" 
+                 @error="handleImageError"
+                 class="header-image">
+            <img v-else
+                 src="https://via.placeholder.com/600x300?text=Intet+billede+tilgængeligt" 
+                 :alt="plant.common_name || 'Plante uden billede'" 
                  class="header-image">
 
             <div class="card-body">
