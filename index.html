@@ -81,14 +81,14 @@
                                     <th>Handling</th>
                                 </tr>
                             </thead>
-                            <tbody>                                <tr v-for="plant in plants" :key="plant.id">
+                            <tbody>                                <tr v-for="plant in plants" :key="plant.id" class="plant-card" :data-plant-id="plant.id">
                                     <td><img :src="plant.image" :alt="plant.name" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
-                                    <td>{{ plant.name }}</td>
+                                    <td class="card-title">{{ plant.name }}</td>
                                     <td>{{ plant.watering }} 💧</td>
                                     <td>{{ plant.sunlight }} ☀️</td>
                                     <td>
-                                        <button class="btn btn-info btn-sm me-2" @click="viewPlantDetails(plant.id)">Detaljer</button>
-                                        <button class="btn btn-danger btn-sm" @click="deletePlant(plant.id)">Slet</button>
+                                        <button class="btn btn-info btn-sm me-2 details-button" :data-plant-id="plant.id" @click="viewPlantDetails(plant.id)">Detaljer</button>
+                                        <button class="btn btn-danger btn-sm delete-button" :data-plant-id="plant.id" @click="deletePlant(plant.id)">Slet</button>
                                     </td>
                                 </tr>
                                 <tr v-if="plants.length === 0">

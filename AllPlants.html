@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +9,13 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   
+
 </head>
+
 <body>
     <div id="app">
-        <div class="container mt-4">            <h1>Plante Liste</h1>             
+        <div class="container mt-4">
+            <h1>Plante Liste</h1>
             <div class="row mb-4">
                 <div class="col-12 text-center">
                     <a id="Back" href="index.html" class="btn btn-primary btn-lg">
@@ -20,31 +23,23 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Søgefelt -->
             <div class="row mb-4">
                 <div class="col-md-8 offset-md-2">
                     <div class="input-group">
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            placeholder="Søg efter planter..." 
-                            v-model="searchQuery"
+                        <input type="text" class="form-control" placeholder="Søg efter planter..." v-model="searchQuery"
                             @keyup.enter="searchPlants">
-                        <button 
-                            class="btn btn-success" 
-                            @click="searchPlants">
+                        <button class="btn btn-success" @click="searchPlants">
                             Søg
                         </button>
-                        <button 
-                            class="btn btn-outline-secondary" 
-                            @click="clearSearch" 
-                            v-if="isSearchActive">
+                        <button class="btn btn-outline-secondary" @click="clearSearch" v-if="isSearchActive">
                             Ryd søgning
                         </button>
                     </div>
-                </div>            </div>
-            
+                </div>
+            </div>
+
             <!-- Loading indikator -->
             <div v-if="loading" class="text-center my-5">
                 <div class="spinner-border text-success" role="status">
@@ -52,31 +47,31 @@
                 </div>
                 <p class="mt-2">Søger efter planter...</p>
             </div>
-            
+
             <!-- Søgeresultat info -->
             <div v-if="isSearchActive && !loading" class="alert alert-info mb-3">
                 <span v-if="results.length > 0">Fandt {{results.length}} resultater for "{{searchQuery}}"</span>
                 <span v-else>Ingen resultater fundet for "{{searchQuery}}"</span>
             </div>
-            
-            <ul class="list-group" v-if="!loading">                
-                <li v-for="plant in results" :key="plant.id" class="list-group-item d-flex align-items-center justify-content-between">
+
+            <ul id="plant-list" class="list-group" v-if="!loading">
+                <li v-for="plant in results" :key="plant.id"
+                    class="list-group-item d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <!-- Billede af planten -->
-                        <img 
-                            v-if="plant.default_image?.thumbnail" 
-                            :src="plant.default_image.thumbnail" 
-                            :alt="plant.common_name || 'Ukendt navn'" 
-                            class="me-3" 
+                        <img v-if="plant.default_image?.thumbnail" :src="plant.default_image.thumbnail"
+                            :alt="plant.common_name || 'Ukendt navn'" class="me-3"
                             style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
-                        
+
                         <!-- Plantenavn -->
                         <a :href="`PlanteDetaljer.html?id=${plant.id}`" class="text-decoration-none">
                             {{ plant.common_name || 'Ukendt navn' }}
                         </a>
                     </div>
                     <!-- Add knap -->
-                    <button class="btn btn-success btn-sm add-plant-btn" @click="addPlant(plant)">Add</button>
+                    <button class="btn btn-success btn-sm add-plant-btn" :data-plant-id="plant.id"
+                        :data-plant-name="plant.common_name || 'Ukendt navn'" :id="`add-plant-${plant.id}`"
+                        @click="addPlant(plant)">Add</button>
                 </li>
             </ul>
             <div class="mt-3 d-flex justify-content-between">
@@ -89,4 +84,5 @@
 
     <script src="AllPlants.js"></script>
 </body>
+
 </html>
