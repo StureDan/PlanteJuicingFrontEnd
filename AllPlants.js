@@ -14,8 +14,16 @@ Vue.createApp({
             loading: false // Loading state
         };
     },
-    methods: {
-        addPlant(plant) {
+    methods: {        addPlant(plant) {
+            // Kontroller om plant.id eksisterer og er et gyldigt nummer
+            if (!plant.id || isNaN(parseInt(plant.id))) {
+                console.error("Planten har ikke et gyldigt ID:", plant);
+                alert("Kan ikke gemme planten, da den mangler et gyldigt ID.");
+                return;
+            }
+            
+            console.log("Tilføjer plante med ID:", plant.id);
+            
             // Opret plante-objekt til at gemme lokalt
             const plantData = {
                 id: Date.now(), // Unik ID baseret på tidsstempel
@@ -40,7 +48,7 @@ Vue.createApp({
             // Vis succes besked
             alert(`Planten "${plantData.name}" er blevet tilføjet til dine planter!`);
         },  
-             
+
          async fetchPlants() {
             this.loading = true;
             try {

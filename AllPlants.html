@@ -59,7 +59,8 @@
                 <span v-else>Ingen resultater fundet for "{{searchQuery}}"</span>
             </div>
             
-            <ul class="list-group" v-if="!loading">                <li v-for="plant in results" :key="plant.id" class="list-group-item d-flex align-items-center justify-content-between">
+            <ul class="list-group" v-if="!loading">                
+                <li v-for="plant in results" :key="plant.id" class="list-group-item d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
                         <!-- Billede af planten -->
                         <img 

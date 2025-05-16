@@ -115,17 +115,20 @@ Vue.createApp({
                 alert("Planten er blevet slettet.");
             }
         },
-        
-        // Vis detaljer om en specifik plante
+          // Vis detaljer om en specifik plante
         viewPlantDetails(plantId) {
             // Find planten i det lokale array
             const plant = this.plants.find(p => p.id === plantId);
+            console.log("Forsøger at vise detaljer for plante:", plant);
             
             if (plant && plant.plantId) {
                 // Naviger til PlanteDetaljer.html med det korrekte API plante-ID
+                console.log("Navigerer til plantedetaljer med ID:", plant.plantId);
                 window.location.href = `PlanteDetaljer.html?id=${plant.plantId}`;
             } else {
-                alert("Kan ikke finde detaljer for denne plante.");
+                // Hvis planten ikke har et plantId, vis en fejlmeddelelse med mere information
+                console.error("Planten mangler plantId:", plant);
+                alert("Kan ikke finde detaljer for denne plante. Den valgte plante mangler et reference-ID til API'en.");
             }
         }
     },

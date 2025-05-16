@@ -19,42 +19,57 @@ Vue.createApp({
         getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
-        },
-          // Hent plantedetaljer fra API
+        },        // Hent plantedetaljer fra API
         async fetchPlantDetails() {
             this.loading = true;
             this.error = null;
             
             try {                
+                // Vis fuld URL for at hjælpe med fejlfinding
+                const fullUrl = `${detailsUrl}${this.plantId}?key=${apiKey}`;
+                console.log('Henter plante fra URL:', fullUrl);
+                
                 // Hent grundlæggende plantedetaljer med API nøgle som query parameter
-                const response = await axios.get(`${detailsUrl}${this.plantId}?key=${apiKey}`);
-                this.plant = response.data;
-                console.log('Plant details:', this.plant);
+                const response = await axios.get(fullUrl);
                 
-                // Log alle tilgængelige billedformater for at finde det bedste billede
-                if (this.plant.default_image) {
-                    console.log('Available image types:', Object.keys(this.plant.default_image));
-                    console.log('All image data:', this.plant.default_image);
-                }
-                
-                // Hent plejeanvisninger
-                try {
-                    const careResponse = await axios.get(`${careGuideUrl}&species_id=${this.plantId}`);
-                    if (careResponse.data.data && careResponse.data.data.length > 0) {
-                        this.careDetails = careResponse.data.data[0].section.reduce((acc, section) => {
-                            acc[section.type.toLowerCase()] = section.description;
-                            return acc;
-                        }, {});
+                // Tjek om svaret indeholder data eller fejl
+                if (response.data && !response.data.error) {
+                    this.plant = response.data;
+                    console.log('Plant details:', this.plant);
+                    
+                    // Log alle tilgængelige billedformater for at finde det bedste billede
+                    if (this.plant.default_image) {
+                        console.log('Available image types:', Object.keys(this.plant.default_image));
+                        console.log('All image data:', this.plant.default_image);
                     }
-                    console.log('Care details:', this.careDetails);
-                } catch (careError) {
-                    console.error('Error fetching care details:', careError);
-                    // Vi fortsætter selvom plejedetaljerne ikke kunne hentes
+                    
+                    // Hent plejeanvisninger
+                    try {
+                        const careUrl = `${careGuideUrl}&species_id=${this.plantId}`;
+                        console.log('Henter plejeanvisninger fra URL:', careUrl);
+                        
+                        const careResponse = await axios.get(careUrl);
+                        if (careResponse.data.data && careResponse.data.data.length > 0) {
+                            this.careDetails = careResponse.data.data[0].section.reduce((acc, section) => {
+                                acc[section.type.toLowerCase()] = section.description;
+                                return acc;
+                            }, {});
+                            console.log('Care details:', this.careDetails);
+                        } else {
+                            console.log('Ingen plejeanvisninger fundet for denne plante');
+                        }
+                    } catch (careError) {
+                        console.error('Error fetching care details:', careError);
+                        // Vi fortsætter selvom plejedetaljerne ikke kunne hentes
+                    }
+                } else {
+                    // API returnerede en fejl
+                    console.error('API Error:', response.data);
+                    this.error = `API fejl: ${response.data.message || 'Ukendt fejl fra API'}`;
                 }
-                
             } catch (error) {
                 console.error('Error fetching plant details:', error);
-                this.error = 'Der opstod en fejl ved hentning af plantedetaljer. Prøv igen senere.';
+                this.error = `Der opstod en fejl ved hentning af plantedetaljer: ${error.message || 'Ukendt fejl'}`;
             } finally {
                 this.loading = false;
             }        },
@@ -84,16 +99,25 @@ Vue.createApp({
             // Vis succes besked
             alert(`Planten "${plantData.name}" er blevet tilføjet til dine planter!`);
         }
-    },
-    mounted() {
+    },    mounted() {
         // Hent plante-ID fra URL
         this.plantId = this.getUrlParameter('id');
+        console.log("Modtog plante-ID fra URL:", this.plantId);
         
         if (this.plantId) {
-            this.fetchPlantDetails();
+            // Hvis plantId er et gyldigt ID (et tal), fortsæt med at hente detaljer
+            if (!isNaN(parseInt(this.plantId))) {
+                console.log("Henter detaljer for plante-ID:", this.plantId);
+                this.fetchPlantDetails();
+            } else {
+                this.loading = false;
+                this.error = "Det angivne plante-ID er ikke et gyldigt ID.";
+                console.error("Ugyldigt plante-ID:", this.plantId);
+            }
         } else {
             this.loading = false;
             this.error = "Intet plante-ID angivet i URL'en.";
+            console.error("Intet plante-ID fundet i URL");
         }
     }
 }).mount('#app');
