@@ -28,12 +28,12 @@
             <div class="row mb-4">
                 <div class="col-md-8 offset-md-2">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Søg efter planter..." v-model="searchQuery"
+                        <input id="searchBox"type="text" class="form-control" placeholder="Søg efter planter..." v-model="searchQuery"
                             @keyup.enter="searchPlants">
-                        <button class="btn btn-success" @click="searchPlants">
+                        <button id="searchButton"class="btn btn-success" @click="searchPlants">
                             Søg
                         </button>
-                        <button class="btn btn-outline-secondary" @click="clearSearch" v-if="isSearchActive">
+                        <button id ="clearSearchButton" class="btn btn-outline-secondary" @click="clearSearch" v-if="isSearchActive">
                             Ryd søgning
                         </button>
                     </div>
@@ -75,9 +75,9 @@
                 </li>
             </ul>
             <div class="mt-3 d-flex justify-content-between">
-                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">Forrige</button>
-                <span>Side {{ currentPage }} af {{ totalPages }}</span>
-                <button class="btn btn-primary" @click="nextPage" :disabled="currentPage === totalPages">Næste</button>
+                <button id="prevPage" class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">Forrige</button>
+                <span id="currentPageInfo">Side {{ currentPage }} af {{ totalPages }}</span>
+                <button id="nextPage" class="btn btn-primary" @click="nextPage" :disabled="currentPage === totalPages">Næste</button>
             </div>
         </div>
     </div>
