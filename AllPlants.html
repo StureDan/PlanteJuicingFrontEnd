@@ -39,7 +39,11 @@
                     </div>
                 </div>
             </div>
-
+            <div class="mt-3 d-flex justify-content-between">
+                <button id="prevPage" class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">Forrige</button>
+                <span id="currentPageInfo">Side {{ currentPage }} af {{ totalPages }}</span>
+                <button id="nextPage" class="btn btn-primary" @click="nextPage" :disabled="currentPage === totalPages">Næste</button>
+            </div>
             <!-- Loading indikator -->
             <div v-if="loading" class="text-center my-5">
                 <div class="spinner-border text-success" role="status">
@@ -75,9 +79,9 @@
                 </li>
             </ul>
             <div class="mt-3 d-flex justify-content-between">
-                <button id="prevPage" class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">Forrige</button>
-                <span id="currentPageInfo">Side {{ currentPage }} af {{ totalPages }}</span>
-                <button id="nextPage" class="btn btn-primary" @click="nextPage" :disabled="currentPage === totalPages">Næste</button>
+                <button id="prevPage1" class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">Forrige</button>
+                <span id="currentPageInfo1">Side {{ currentPage }} af {{ totalPages }}</span>
+                <button id="nextPage1" class="btn btn-primary" @click="nextPage" :disabled="currentPage === totalPages">Næste</button>
             </div>
         </div>
     </div>
