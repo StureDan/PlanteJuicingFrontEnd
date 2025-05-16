@@ -5,9 +5,9 @@ const detailsUrl = 'https://perenual.com/api/species-care-guide-list?key=sk-2UXs
 const apiCache = {
     // Cache data med timestamp
     store: {},
-    
+
     // Gem data i cachen
-    set: function(key, data) {
+    set: function (key, data) {
         this.store[key] = {
             timestamp: Date.now(),
             data: data
@@ -19,9 +19,9 @@ const apiCache = {
             console.warn('Kunne ikke gemme cache i localStorage', e);
         }
     },
-    
+
     // Hent data fra cachen hvis det findes og ikke er for gammelt (24 timer)
-    get: function(key) {
+    get: function (key) {
         const cached = this.store[key];
         if (cached && (Date.now() - cached.timestamp < 24 * 60 * 60 * 1000)) {
             console.log('Bruger cached data for', key);
@@ -29,9 +29,9 @@ const apiCache = {
         }
         return null;
     },
-    
+
     // Indlæs cache fra localStorage ved opstart
-    loadFromStorage: function() {
+    loadFromStorage: function () {
         try {
             const stored = localStorage.getItem('plantCache');
             if (stored) {
@@ -96,10 +96,10 @@ Vue.createApp({
 
             // Vis succes besked
             alert(`Planten "${plantData.name}" er blevet tilføjet til dine planter!`);
-        },        async fetchPlants() {
+        }, async fetchPlants() {
             this.loading = true;
             this.retryCount = 0;
-            
+
             try {
                 // Byg URL afhængigt af om der er en aktiv søgning
                 let url = `${perenualBaseUrl}&page=${this.currentPage}`;
@@ -108,23 +108,23 @@ Vue.createApp({
                 if (this.isSearchActive && this.searchQuery.trim()) {
                     url += `&q=${encodeURIComponent(this.searchQuery.trim())}`;
                 }
-                
+
                 // Generer en cache-nøgle baseret på URL'en
                 const cacheKey = url;
-                
+
                 // Tjek først om vi har data i cachen
                 const cachedData = apiCache.get(cacheKey);
                 if (cachedData) {
                     console.log('Bruger cached data i stedet for API-kald');
                     // Opdater resultater og total antal sider fra cache
                     this.results = cachedData.data;
-                    
+
                     if (cachedData.meta && cachedData.meta.total_pages) {
                         this.totalPages = cachedData.meta.total_pages;
                     } else if (this.isSearchActive) {
                         this.totalPages = this.results.length > 0 ? 1 : 0;
                     }
-                    
+
                     return; // Afslut funktionen her hvis vi bruger cached data
                 }
 
@@ -134,21 +134,21 @@ Vue.createApp({
                         console.log(`Fetching plants from URL (forsøg ${retryCount + 1}):`, url);
                         const response = await axios.get(url);
                         console.log('API svarede med data:', response.data);
-                        
+
                         // Gem i cache
                         apiCache.set(cacheKey, response.data);
-                        
+
                         return response.data;
                     } catch (error) {
                         // Tjek om det er en rate-limit fejl (HTTP 429)
                         if (error.response && error.response.status === 429) {
                             // Få ventetid fra header hvis tilgængelig, ellers brug progressiv backoff
-                            const retryAfter = error.response.headers['retry-after'] 
-                                ? parseInt(error.response.headers['retry-after']) * 1000 
+                            const retryAfter = error.response.headers['retry-after']
+                                ? parseInt(error.response.headers['retry-after']) * 1000
                                 : delay * 2; // Double delay for hver retry
-                            
+
                             if (retryCount < 3) { // Maksimalt 3 forsøg
-                                console.log(`Rate limit ramt. Venter ${retryAfter/1000} sekunder før næste forsøg...`);
+                                console.log(`Rate limit ramt. Venter ${retryAfter / 1000} sekunder før næste forsøg...`);
                                 await new Promise(resolve => setTimeout(resolve, retryAfter));
                                 return fetchWithRetry(retryCount + 1, retryAfter);
                             }
@@ -156,7 +156,7 @@ Vue.createApp({
                         throw error; // Kast fejlen videre hvis det ikke er en rate-limit fejl eller vi har brugt alle forsøg
                     }
                 };
-                
+
                 // Start fetch med retry
                 const responseData = await fetchWithRetry();
 
@@ -207,11 +207,11 @@ Vue.createApp({
             this.currentPage = 1;
             this.totalPages = this.originalTotalPages;
             await this.fetchPlants();
-        },        async fetchPlantDetails(plantId) {
+        }, async fetchPlantDetails(plantId) {
             try {
                 const url = `${detailsUrl}&species_id=${plantId}`;
                 const cacheKey = `details_${plantId}`;
-                
+
                 // Tjek først om vi har data i cachen
                 const cachedData = apiCache.get(cacheKey);
                 if (cachedData) {
@@ -219,25 +219,25 @@ Vue.createApp({
                     this.selectedPlant = cachedData.data;
                     return;
                 }
-                
+
                 // Implementer retry-logik
                 const fetchWithRetry = async (retryCount = 0, delay = 1000) => {
                     try {
                         console.log(`Henter plantedetaljer (forsøg ${retryCount + 1}):`, url);
                         const response = await axios.get(url);
-                        
+
                         // Gem resultatet i cache
                         apiCache.set(cacheKey, response.data);
-                        
+
                         return response.data;
                     } catch (error) {
                         if (error.response && error.response.status === 429) {
-                            const retryAfter = error.response.headers['retry-after'] 
-                                ? parseInt(error.response.headers['retry-after']) * 1000 
+                            const retryAfter = error.response.headers['retry-after']
+                                ? parseInt(error.response.headers['retry-after']) * 1000
                                 : delay * 2;
-                            
+
                             if (retryCount < 3) {
-                                console.log(`Rate limit ramt. Venter ${retryAfter/1000} sekunder før næste forsøg...`);
+                                console.log(`Rate limit ramt. Venter ${retryAfter / 1000} sekunder før næste forsøg...`);
                                 await new Promise(resolve => setTimeout(resolve, retryAfter));
                                 return fetchWithRetry(retryCount + 1, retryAfter);
                             }
@@ -245,7 +245,7 @@ Vue.createApp({
                         throw error;
                     }
                 };
-                
+
                 const responseData = await fetchWithRetry();
                 console.log('Plantedetaljer modtaget:', responseData);
                 this.selectedPlant = responseData.data; // Gem detaljerne for den valgte plante
@@ -253,7 +253,8 @@ Vue.createApp({
                 console.error('Error fetching plant details:', error);
                 alert('Der opstod en fejl ved hentning af plantedetaljer. Prøv igen senere.');
             }
-        },nextPage() {
+        },
+        async nextPage() {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
                 this.fetchPlants();
@@ -261,7 +262,7 @@ Vue.createApp({
                 window.scrollTo(0, 0);
             }
         },
-        prevPage() {
+       async prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;
                 this.fetchPlants();
