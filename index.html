@@ -87,7 +87,7 @@
                                     <td>{{ plant.watering }} 💧</td>
                                     <td>{{ plant.sunlight }} ☀️</td>
                                     <td>
-                                        <button class="btn btn-info btn-sm me-2 details-button" :data-plant-id="plant.id" @click="viewPlantDetails(plant.id)">Detaljer</button>
+                                        <button id="Detaljer" class="btn btn-info btn-sm me-2 details-button" :data-plant-id="plant.id" @click="viewPlantDetails(plant.id)">Detaljer</button>
                                         <button class="btn btn-danger btn-sm delete-button" :data-plant-id="plant.id" @click="deletePlant(plant.id)">Slet</button>
                                     </td>
                                 </tr>
